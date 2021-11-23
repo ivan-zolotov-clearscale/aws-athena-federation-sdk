@@ -47,16 +47,20 @@ public class AthenaUDFHandler
 
     private final CachableSecretsManager cachableSecretsManager;
 
+//    public AthenaUDFHandler()
+//    {
+//        this(new CachableSecretsManager(AWSSecretsManagerClient.builder().build()));
+//    }
     public AthenaUDFHandler()
     {
-        this(new CachableSecretsManager(AWSSecretsManagerClient.builder().build()));
+        this(null);
     }
 
     @VisibleForTesting
     AthenaUDFHandler(CachableSecretsManager cachableSecretsManager)
     {
         super(SOURCE_TYPE);
-        this.cachableSecretsManager = cachableSecretsManager;
+        this.cachableSecretsManager = null;
     }
 
     /**
@@ -68,6 +72,11 @@ public class AthenaUDFHandler
      */
     public String compress(String input)
     {
+        try {
+            Thread.sleep(2000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         byte[] inputBytes = input.getBytes(StandardCharsets.UTF_8);
 
         // create compressor

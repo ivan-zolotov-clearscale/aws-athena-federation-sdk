@@ -117,7 +117,10 @@ public abstract class JdbcMetadataHandler
         final String secretName = databaseConnectionConfig.getSecret();
         if (StringUtils.isNotBlank(secretName)) {
             LOGGER.info("Using Secrets Manager.");
-            return new RdsSecretsCredentialProvider(getSecret(secretName));
+            LOGGER.info("Secret name: " + secretName);
+            String ss = getSecret(secretName);
+            LOGGER.info("Secret found " + ss);
+            return new RdsSecretsCredentialProvider(ss);
         }
 
         return null;
@@ -126,7 +129,9 @@ public abstract class JdbcMetadataHandler
     @Override
     public ListSchemasResponse doListSchemaNames(final BlockAllocator blockAllocator, final ListSchemasRequest listSchemasRequest)
     {
+        System.out.println(this.getClass().getName());
         try (Connection connection = jdbcConnectionFactory.getConnection(getCredentialProvider())) {
+            System.out.println(this.getClass().getName());
             LOGGER.info("{}: List schema names for Catalog {}", listSchemasRequest.getQueryId(), listSchemasRequest.getCatalogName());
             return new ListSchemasResponse(listSchemasRequest.getCatalogName(), listDatabaseNames(connection));
         }
@@ -154,7 +159,9 @@ public abstract class JdbcMetadataHandler
     @Override
     public ListTablesResponse doListTables(final BlockAllocator blockAllocator, final ListTablesRequest listTablesRequest)
     {
+        System.out.println(this.getClass().getName());
         try (Connection connection = jdbcConnectionFactory.getConnection(getCredentialProvider())) {
+            System.out.println(this.getClass().getName());
             LOGGER.info("{}: List table names for Catalog {}, Table {}", listTablesRequest.getQueryId(), listTablesRequest.getCatalogName(), listTablesRequest.getSchemaName());
             return new ListTablesResponse(listTablesRequest.getCatalogName(),
                     listTables(connection, listTablesRequest.getSchemaName()), null);
@@ -212,7 +219,9 @@ public abstract class JdbcMetadataHandler
     @Override
     public GetTableResponse doGetTable(final BlockAllocator blockAllocator, final GetTableRequest getTableRequest)
     {
+        System.out.println(this.getClass().getName());
         try (Connection connection = jdbcConnectionFactory.getConnection(getCredentialProvider())) {
+            System.out.println(this.getClass().getName());
             Schema partitionSchema = getPartitionSchema(getTableRequest.getCatalogName());
             return new GetTableResponse(getTableRequest.getCatalogName(), getTableRequest.getTableName(), getSchema(connection, getTableRequest.getTableName(), partitionSchema),
                     partitionSchema.getFields().stream().map(Field::getName).collect(Collectors.toSet()));

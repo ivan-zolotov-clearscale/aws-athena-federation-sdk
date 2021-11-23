@@ -115,7 +115,9 @@ public class MySqlMetadataHandler
     {
         LOGGER.info("{}: Schema {}, table {}", getTableLayoutRequest.getQueryId(), getTableLayoutRequest.getTableName().getSchemaName(),
                 getTableLayoutRequest.getTableName().getTableName());
+        System.out.println(this.getClass().getName());
         try (Connection connection = getJdbcConnectionFactory().getConnection(getCredentialProvider())) {
+            System.out.println(this.getClass().getName());
             final String escape = connection.getMetaData().getSearchStringEscape();
 
             List<String> parameters = Arrays.asList(getTableLayoutRequest.getTableName().getTableName(), getTableLayoutRequest.getTableName().getSchemaName());

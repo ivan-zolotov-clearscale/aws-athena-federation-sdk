@@ -56,6 +56,7 @@ import com.amazonaws.athena.connector.lambda.security.EncryptionKeyFactory;
 import com.amazonaws.athena.connector.lambda.security.KmsKeyFactory;
 import com.amazonaws.athena.connector.lambda.security.LocalKeyFactory;
 import com.amazonaws.athena.connector.lambda.serde.VersionedObjectMapperFactory;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.athena.AmazonAthena;
 import com.amazonaws.services.athena.AmazonAthenaClientBuilder;
 import com.amazonaws.services.kms.AWSKMSClientBuilder;
@@ -110,6 +111,8 @@ public abstract class MetadataHandler
     protected static final String KMS_KEY_ID_ENV = "kms_key_id";
     protected static final String DISABLE_SPILL_ENCRYPTION = "disable_spill_encryption";
 
+    private static final String ENDPOINT_URL = "https://bucket.vpce-0820514f7d107c9bb-e3j9pmwl-us-east-2c.s3.us-east-2.vpce.amazonaws.com";
+
     private final CachableSecretsManager secretsManager;
     private final AmazonAthena athena;
     private final ThrottlingInvoker athenaInvoker = ThrottlingInvoker.newDefaultBuilder(ATHENA_EXCEPTION_FILTER).build();
@@ -140,7 +143,11 @@ public abstract class MetadataHandler
 
         this.secretsManager = new CachableSecretsManager(AWSSecretsManagerClientBuilder.defaultClient());
         this.athena = AmazonAthenaClientBuilder.defaultClient();
-        this.verifier = new SpillLocationVerifier(AmazonS3ClientBuilder.standard().build());
+        this.verifier = new SpillLocationVerifier(
+                AmazonS3ClientBuilder.standard()
+                        .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(ENDPOINT_URL, "us-east-2"))
+                        .build()
+        );
     }
 
     /**
@@ -159,7 +166,9 @@ public abstract class MetadataHandler
         this.sourceType = sourceType;
         this.spillBucket = spillBucket;
         this.spillPrefix = spillPrefix;
-        this.verifier = new SpillLocationVerifier(AmazonS3ClientBuilder.standard().build());
+        this.verifier = new SpillLocationVerifier(AmazonS3ClientBuilder.standard()
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(ENDPOINT_URL, "us-east-2"))
+                .build());
     }
 
     /**

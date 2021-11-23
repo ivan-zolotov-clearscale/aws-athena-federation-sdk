@@ -162,7 +162,7 @@ public class ExampleRecordHandler
 
          builder.withExtractor("day", (IntExtractor) (Object context, NullableIntHolder value) -> {
              value.isSet = 1;
-             value.value = Integer.parseInt(((String[]) context)[2]);
+             value.value = Integer.parseInt(((String[]) context)[2]);Logs
          });
 
          builder.withExtractor("encrypted_payload", (VarCharExtractor) (Object context, NullableVarCharHolder value) -> {

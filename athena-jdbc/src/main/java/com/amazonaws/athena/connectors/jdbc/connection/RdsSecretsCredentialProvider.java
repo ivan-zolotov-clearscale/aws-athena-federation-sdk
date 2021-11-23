@@ -53,7 +53,8 @@ public class RdsSecretsCredentialProvider
         catch (IOException ioException) {
             throw new RuntimeException("Could not deserialize RDS credentials into HashMap", ioException);
         }
-
+        System.out.println(rdsSecrets.get("username"));
+        System.out.println(rdsSecrets.get("password"));
         this.jdbcCredential = new JdbcCredential(rdsSecrets.get("username"), rdsSecrets.get("password"));
     }
 
